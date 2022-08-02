@@ -1,5 +1,3 @@
-@file:JvmName("Week2day2Kt")
-
 fun `숫자 문자열과 영단어`() {
     println(solution("one4seveneight"))
 }

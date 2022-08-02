@@ -1,5 +1,5 @@
-fun main() = with(System.`in`.bufferedReader()) {
-
+// https://www.acmicpc.net/problem/6603
+fun `로또`() = with(System.`in`.bufferedReader()) {
     while (true) {
         val list: List<Int> = readLine().split(" ").map { it.toInt() }
         val num = list[0]
@@ -12,21 +12,18 @@ fun main() = with(System.`in`.bufferedReader()) {
 
         fun func(depth: Int, start: Int) {
             if (depth == 6) {
-                val count = isVisit.count { it }
-                if (count == 6) {
-                    for ((i, v) in isVisit.withIndex()) {
-                        if (v) {
-                            print("${arr[i]} ")
-                        }
+                for ((i, v) in isVisit.withIndex()) {
+                    if (v) {
+                        print("${arr[i]} ")
                     }
-                    println()
                 }
+                println()
                 return
             }
 
             for (i in start until arr.size) {
                 isVisit[i] = true
-                func(depth + 1, start + 1)
+                func(depth + 1, i + 1)
                 isVisit[i] = false
             }
         }
