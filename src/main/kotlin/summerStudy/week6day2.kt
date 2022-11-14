@@ -1,61 +1,86 @@
 import java.lang.Integer.min
 
 fun main(): Unit = with(System.`in`.bufferedReader()) {
+
+    var requiredCheckNum = 0
+    var minMoveCount = Integer.MAX_VALUE
+
     fun solution(name: String): Int {
-        var answer = 0
+
         val nameArray: CharArray = name.toCharArray()
+        var answer = 0
         val nameSize = nameArray.size
-        val counts = IntArray(nameSize)
-        for ((idx, aChar) in nameArray.withIndex()) {
+        val visit = BooleanArray(nameSize)
+
+        visit[0] = true
+        requiredCheckNum = nameSize - 1
+
+        for (aChar in nameArray) {
             val front = aChar - 'A'
             val back = 'Z' - aChar + 1
-            counts[idx] = min(front, back)
+            val min = min(front, back)
+            if (min == 0) {
+                requiredCheckNum -= 1
+            }
+            answer += min
         }
 
-        val zeroCount = counts.count { it == 0 }
-        val upAndDownCount = counts.sum()
-        if (zeroCount == 0) { // answer == 0인게 없을 때
-            answer = upAndDownCount + nameSize - 1
-            return answer
-        }
+        fun dfs(visit: BooleanArray, start: Int, moveCount: Int, checkCount: Int) {
 
-        val checkMax = nameSize - zeroCount
+            if (checkCount == requiredCheckNum) {
+                minMoveCount = min(moveCount, minMoveCount)
+                return
+            }
 
-        var moveDirection = 1
-        var checkNum = 0
-        var nowIdx = 0
-        var moveNum = -1
+            var left = start
+            var leftMoveCount = 0
+            var right = start
+            var rightMoveCount = 0
 
-        // answer == 0 인게 있을 때
-        while (checkNum != checkMax) {
-            moveNum += 1
-            if (counts[nowIdx] != 0) {
-                counts[nowIdx] = -1
-                checkNum += 1
-            } else { // nowIdx 가 0일때
-                // moveDirection으로 갔을 때 수가 나오는 경우
-                var tempIdx = nowIdx
-                while(true){
+            while (leftMoveCount < visit.size) {
+                left -= 1
+                leftMoveCount += 1
 
+                if (left < 0) {
+                    left = visit.size - 1
                 }
 
-                // moveDirection 반대로 갔을 때 수가 나오는 경우
-
-                // 비교 해서 방향 틀지 결정
-                // 방향 틀면 moveNum -= 2 해주자
+                if (!visit[left]) {
+                    break
+                }
             }
 
-            if (nowIdx == 0 && moveDirection == -1) {
-                nowIdx = nameSize - 1
-                continue
+
+            while (rightMoveCount < visit.size) {
+                right += 1
+                rightMoveCount += 1
+
+                if (right >= visit.size) {
+                    right = 0
+                }
+
+                if (!visit[right]) {
+                    break
+                }
             }
-            nowIdx += moveDirection
+
+
+            visit[left] = true
+            dfs(visit, left, moveCount + leftMoveCount, checkCount + 1)
+            visit[left] = false
+            visit[right] = true
+            dfs(visit, right, moveCount + rightMoveCount, checkCount + 1)
+            visit[right] = false
         }
 
+        dfs(visit, 0, 0, 0)
 
-        return answer
+
+        return answer + minMoveCount
     }
 
-    solution("JEROEN")
+
+
+    println(solution("JAN"))
 
 }
