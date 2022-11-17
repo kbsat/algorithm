@@ -47,7 +47,7 @@ fun main() {
     println(result)
 }
 
-fun bfs(graph: Array<IntArray>, queue: LinkedList<Triple<Int, Int, Int>>) {
+private fun bfs(graph: Array<IntArray>, queue: LinkedList<Triple<Int, Int, Int>>) {
     while (queue.isNotEmpty()) {
         val (nowX, nowY, days) = queue.removeFirst()
 

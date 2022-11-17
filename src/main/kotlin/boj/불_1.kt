@@ -30,37 +30,34 @@ fun main() {
     }
 
     bfsFire(fireMiro, queue) // 불의경로에 따라서 fireMiro 계산
-    bfsJihoon(fireMiro, queue, visited, jihoonPosition)
+    val result = bfsJihoon(fireMiro, queue, visited, jihoonPosition)
 
-    if (min == Int.MAX_VALUE) {
+    if (result == Int.MAX_VALUE) {
         print("IMPOSSIBLE")
         return
     }
 
-    print(min)
+    print(result)
 }
 
-fun bfsJihoon(
+private fun bfsJihoon(
     fireMiro: Array<IntArray>,
     queue: LinkedList<Triple<Int, Int, Int>>,
     visited: Array<BooleanArray>,
     position: Pair<Int, Int>,
-) {
+): Int {
     queue.add(Triple(position.first, position.second, 1))
+    visited[position.first][position.second] = true
 
     while (queue.isNotEmpty()) {
         val (nowX, nowY, cost) = queue.removeFirst()
-        visited[nowX][nowY] = true
 
         for (i in 0 until 4) {
             val nx = nowX + dx[i]
             val ny = nowY + dy[i]
 
             if (nx < 0 || nx >= fireMiro.size || ny < 0 || ny >= fireMiro[0].size) {
-                if (min > cost) {
-                    min = cost
-                }
-                continue
+                return cost + 1
             }
 
             // 가지 않은 곳 && 벽이 아닌곳 && 불이 내 코스트보다 느린 곳
@@ -68,10 +65,12 @@ fun bfsJihoon(
                 continue
             }
             if (fireMiro[nx][ny] > cost + 1 || fireMiro[nx][ny] == 0) {
+                visited[nx][ny] = true
                 queue.add(Triple(nx, ny, cost + 1))
             }
         }
     }
+    return Int.MAX_VALUE
 }
 
 fun bfsFire(fireMiro: Array<IntArray>, queue: LinkedList<Triple<Int, Int, Int>>) {
